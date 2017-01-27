@@ -20,7 +20,7 @@ import org.jgrapht.ext.JGraphModelAdapter;
 import org.jgrapht.graph.ListenableDirectedWeightedGraph;
 
 public class NeuralNetworkGraph {
-	
+        /*test comment*/	
 	protected static void positionAtVertexAt(JGraphModelAdapter m_jgAdapter, Object vertex, int x, int y, boolean bridgeNeuron)
 	{
 		DefaultGraphCell cell = m_jgAdapter.getVertexCell(vertex);
