@@ -5,8 +5,10 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 
 import javax.swing.JFrame;
@@ -44,12 +46,21 @@ public class NeuralNetworkGraph {
         m_jgAdapter.edit(cellAttr, null, null, null);
 	}
 	
-	public static void plot(Map<Integer, List<String>> neuronsByLevelMap,
+	public static void plot(Map<Integer, LinkedHashSet<String>> neuronsByLevelMap,
 			Map<String, Neuron> neuronsListMap, Map<Integer, String> biasNodesLevel) throws Exception
 	{
 		if(neuronsByLevelMap.containsKey(0))
 		{
 			throw new Exception("Invalid key of 0 found in neuronsByLevelMap. The key has to start with 1");
+		}
+		
+		int layer = 1;
+		/*Remove Bias Nodes from neuronsByLevelMap */
+		Iterator<Entry<Integer, String>> biasNodesLevelIter = biasNodesLevel.entrySet().iterator();
+		while(biasNodesLevelIter.hasNext())
+		{
+			neuronsByLevelMap.get(layer).remove(biasNodesLevelIter.next().getValue());
+			layer++;
 		}
 		
 		JFrame frame = new JFrame("Neural Network Plot");
@@ -68,7 +79,7 @@ public class NeuralNetworkGraph {
 	     
 	     for(int a = 1 ; a <= neuronsByLevelMap.size() ; a++)
 	     {
-	    	 List<String> neuronsList = neuronsByLevelMap.get(a);
+	    	 LinkedHashSet<String> neuronsList = neuronsByLevelMap.get(a);
 	    	 Iterator<String> neuronsListIter = neuronsList.iterator();
 	    	 int neuronsListIterCounter = 0;
 	    	 neurons[a - 1] = new String[neuronsList.size()];
@@ -158,7 +169,7 @@ public class NeuralNetworkGraph {
 					 for(int d = bridgeNeuronsRangeStart ; d < neurons[a].length ; d++)
 					 {
 						 bridgeNeuronsMap.put(neurons[a][d], String.valueOf(neurons[a][bridgeNeuronsRangeStart])+" - "+neurons[a][neurons[a].length - 1]); 
-						 System.out.println("");
+						// System.out.println("");
 					 }		 
 				 }else
 				 {
@@ -197,7 +208,7 @@ public class NeuralNetworkGraph {
 					 {
 						 for(int e = 0 ; e < neurons[a+1].length; e++)
 						 {
-							 System.out.println(sourceNode+","+neurons[a+1][e]);
+							// System.out.println(sourceNode+","+neurons[a+1][e]);
 							 if(bridgeNeuronsMap.containsKey(neurons[a+1][e]) && bridgeNeuronsMap.containsKey(sourceNode.split("-")[0].trim()))
 							 {								 									 
 								 g.setEdgeWeight(g.addEdge(bridgeNeuronsMap.get(sourceNode.split("-")[0].trim()), bridgeNeuronsMap.get(neurons[a+1][e])), 
@@ -257,7 +268,7 @@ public class NeuralNetworkGraph {
 	{
 		Random rand = new Random();
 		Map<String,Neuron> neuronsMap = new HashMap<>();
-		List<String> layer1NeuronsList = new ArrayList<String>();
+		LinkedHashSet<String> layer1NeuronsList = new LinkedHashSet<String>();
 		layer1NeuronsList.add("i1");
 		layer1NeuronsList.add("i2");
 		layer1NeuronsList.add("i3");
@@ -266,7 +277,7 @@ public class NeuralNetworkGraph {
 		layer1NeuronsList.add("i6");
 		Iterator<String> layer1NeuronsListIter = layer1NeuronsList.iterator();
 		
-		List<String> layer2NeuronsList = new ArrayList<String>();
+		LinkedHashSet<String> layer2NeuronsList = new LinkedHashSet<String>();
 		layer2NeuronsList.add("h1");
 		layer2NeuronsList.add("h2");
 		layer2NeuronsList.add("h3");
@@ -298,7 +309,7 @@ public class NeuralNetworkGraph {
 		}		
 		
 		layer2NeuronsListIter = layer2NeuronsList.iterator();
-		List<String> layer3NeuronsList = new ArrayList<String>();
+		LinkedHashSet<String> layer3NeuronsList = new LinkedHashSet<String>();
 		layer3NeuronsList.add("h16");
 		layer3NeuronsList.add("h17");
 		layer3NeuronsList.add("h18");
@@ -331,7 +342,7 @@ public class NeuralNetworkGraph {
 		
 		layer3NeuronsListIter = layer3NeuronsList.iterator();
 		
-		List<String> layer4NeuronsList = new ArrayList<String>();
+		LinkedHashSet<String> layer4NeuronsList = new LinkedHashSet<String>();
 		layer4NeuronsList.add("o1");
 		layer4NeuronsList.add("o2");
 		Iterator<String> layer4NeuronsListIter = layer4NeuronsList.iterator();
@@ -349,7 +360,7 @@ public class NeuralNetworkGraph {
 			}
 		}
 	
-		Map<Integer, List<String>> neuronsByLevelMap = new HashMap<>();
+		Map<Integer, LinkedHashSet<String>> neuronsByLevelMap = new HashMap<>();
 		neuronsByLevelMap.put(1, layer1NeuronsList);
 		neuronsByLevelMap.put(2, layer2NeuronsList);
 		neuronsByLevelMap.put(3, layer3NeuronsList);
